@@ -7,17 +7,15 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 %---------- Option ----------
 % 博士、硕士可选参数，用于区别格式
 \newif\if@doctor
-\newif\if@cpsupervisor\@cpsupervisortrue
 \DeclareOption{doctor}{\@doctortrue}
 \DeclareOption{master}{\@doctorfalse}
-\DeclareOption{nocpsupervisor}{\@cpsupervisorfalse}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexbook}}
 \ProcessOptions\relax
 \LoadClass[cs4size,fancyhdr,fntef,openright,cap]{ctexbook}
 
 %---------- 加载宏包 ----------
 % 数学公式
-\RequirePackage{amsmath,amssymb}
+\RequirePackage{amsmath}
 % 公式中的粗体
 \RequirePackage{bm}
 % 公式中的括号，例如subnumcases环境
@@ -42,10 +40,11 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 \RequirePackage{array}
 % hyperref 宏包可根据交叉引用生成超链接，同时生成 PDF 文档的书签。
 \RequirePackage{hyperref}
-
+%代码引用宏包
+\RequirePackage{listings} 
+\RequirePackage{color} 
 \renewcommand\figureautorefname{图}
 \renewcommand\tableautorefname{表}
-\renewcommand\equationautorefname{公式}
 
 \AtEndOfClass{
 	\hypersetup{
@@ -93,14 +92,14 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 % 封面
 \renewcommand*\title[1]{\gdef\ZJU@title{#1}}					% 论文中文标题
-\newcommand*\englishtitle[1]{\long\gdef\ZJU@englishtitle{#1}}	% 论文英文标题
+%\newcommand*\englishtitle[1]{\long\gdef\ZJU@englishtitle{#1}}	% 论文英文标题
 \renewcommand*\author[1]{\gdef\ZJU@author{#1}}					% 作者姓名
-\newcommand*\classification[1]{\gdef\ZJU@classification{#1}}	% 分类号
-\newcommand*\serialnumber[1]{\gdef\ZJU@serialnumber{#1}}		% 单位代码
-\newcommand*\secretlevel[1]{\gdef\ZJU@secretlevel{#1}}			% 密级
+%\newcommand*\classification[1]{\gdef\ZJU@classification{#1}}	% 分类号
+%\newcommand*\serialnumber[1]{\gdef\ZJU@serialnumber{#1}}		% 单位代码
+%\newcommand*\secretlevel[1]{\gdef\ZJU@secretlevel{#1}}			% 密级
 \newcommand*\studentnumber[1]{\gdef\ZJU@studentnumber{#1}}		% 学号
 \newcommand*\supervisor[1]{\gdef\ZJU@supervisor{#1}}			% 指导教师
-\newcommand*\cpsupervisor[1]{\gdef\ZJU@cpsupervisor{#1}}		% 合作导师
+%\newcommand*\cpsupervisor[1]{\gdef\ZJU@cpsupervisor{#1}}		% 合作导师
 \newcommand*\major[1]{\gdef\ZJU@major{#1}}						% 专业名称
 \newcommand*\research[1]{\gdef\ZJU@research{#1}}				% 研究方向
 \newcommand*\institute[1]{\gdef\ZJU@institute{#1}}				% 所在学院
@@ -136,7 +135,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 % 正文部分文字的行距设置
 \renewcommand\baselinestretch{1.56}
-
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
 %---------- 页面设置 ----------
 % \RequirePackage[
 % 	% left=2.4cm,
@@ -195,9 +194,9 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 			\c@page
 		\else
 		% 下面这个命令，如果不需要强调这是空白页，或者学校不允许，则可将其注释掉。
-			\ZJU@blankpage
-			\thispagestyle{ZJU@empty}%
-			\hbox{}\newpage
+		%	\ZJU@blankpage
+		%	\thispagestyle{ZJU@empty}%
+		%	\hbox{}\newpage
 			\if@twocolumn
 				\hbox{}\newpage
 			\fi
@@ -209,7 +208,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % 采用latex2e的底层代码，不用fancyhdr宏包。
 % 页眉标记
 \if@doctor
-	\def\ZJU@D@M@thesis{浙江大学博士学位论文}
+	\def\ZJU@D@M@thesis{浙江大学读书报告}
 \else
 	\def\ZJU@D@M@thesis{浙江大学硕士学位论文}
 \fi
@@ -262,39 +261,17 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 %---------- 本机字体设置 ----------
 \RequirePackage{fontspec}
-\setmainfont{TeX Gyre Termes}	%相当于MS Word中的Times New Roman。
-\setsansfont{TeX Gyre Heros}	%相当于MS Word中的Helvetica。
-\setmonofont{TeX Gyre Cursor}	%相当于MS Word中的Curier。
+\setmainfont{Times New Roman}	%相当于MS Word中的Times New Roman。
+\setsansfont{Helvetica}	%相当于MS Word中的Helvetica。
+\setmonofont{Courier}	%相当于MS Word中的Curier。
 \RequirePackage{xeCJK}
-
-
-% xeCJK 环境初始化
-\xeCJKsetup{xeCJKactive=true}
-
-% 打开/关闭CJK文字之间的空格，tex 源码中汉字间的换行符和空格都会被编译成空格
-% 作者编写论文 tex 源码时一般写到一个逗号就换行再写 这样能最大限度的保证清晰
-% 如不符合您的需求请自行解注释
-%\xeCJKsetup{CJKspace=true}
-
-\xeCJKsetup{CheckSingle=true} % 避免单个CJK字符独占一行
-
-% 非简体中文常用字处理(生僻字、繁体字、日本汉字)
-% 发现实际排版时此类字框会相对于行内上移一个微小的单位
-% 故当封面作者名称含此类字时，只能预留相应的字框宽度，待后期补上
-%\xeCJKDeclareCharClass{Ext-B}{ "20000 -> "2A6DF } % 看XeLaTeX文档写的 没软用
-%\xeCJKsetup{AutoFallBack=true} % 如果不加这句 非简体中文汉字在章节标题和论文标题上显示异常
-
-% 标点处理格式 行末半角 所有标点占一个汉字宽度 行首行末对齐
-\xeCJKEditPunctStyle{hangmobanjiao}{enabled-global-setting = false}
-
-
 % 设置中文正文字体为仿宋，加粗为黑体，斜体为楷体
-\setCJKmainfont[BoldFont={SimHei}, ItalicFont={KaiTi}]{FangSong}
+\setCJKmainfont[BoldFont={STHeitiSC-Medium}, ItalicFont={STKaiti}]{STFangsong}
 % 中文无衬线字体，不知道怎么设置，待以后解决。
 % \setCJKsansfont{}
 % 由于汉字都是等宽的，等宽字体通常应用在代码中，故这里选择用幼圆字体，具体有待以
 % 后更改。
-\setCJKmonofont{YouYuan}
+\setCJKmonofont{STYuanti-SC-Regular}
 
 %---------% 封面及中英标题页 ----------
 % 定义封面及标题页设置中常用的下划线命令（默认宽度90pt）
@@ -314,21 +291,21 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % 封面
 \newcommand\ZJUmakecover{
 	\cleardoublepage
-	\pdfbookmark[0]{封面}{anchor_cover}
 	\thispagestyle{ZJU@empty}
-	分类号：\ZJUunderline[90pt]{\ZJU@classification}
-	\hfill
-	单位代码：\ZJUunderline[60pt]{\ZJU@serialnumber} \par
-	密\quad 级：\ZJUunderline[90pt]{\ZJU@secretlevel}
-	\hfill
-	学\ZJUspace 号：\ZJUunderline[60pt]{\ZJU@studentnumber} \par
+	%分类号：\ZJUunderline[90pt]{\ZJU@classification}
+	%\hfill
+	
+	%单位代码：\ZJUunderline[60pt]{\ZJU@serialnumber} \par
+	%密\quad 级：\ZJUunderline[90pt]{\ZJU@secretlevel}
+	%\hfill
+	%学\ZJUspace 号：\ZJUunderline[60pt]{\ZJU@studentnumber} \par
 	\vspace{10mm}
 	\begin{center}
 		\includegraphics[width=60mm]{./logo/ZJDX.pdf}\par
 		\vspace{4mm}
 		{
 			\if@doctor
-				{\songti \zihao{-1}博士学位论文}
+				{\songti \zihao{-1}读书报告}
 			\else
 				{\songti \zihao{-1}硕士学位论文}
 			\fi
@@ -342,51 +319,28 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 	\addtolength{\titleulwidth@cover}{260pt}
 	\begin{center}
 		\begin{tabular}[t]{>{\zihao{3}\bfseries}rl}
-			中文论文题目: &
+			 &
 			{\begin{minipage}[t][60pt][t]{\titleulwidth@cover}
 				\zihao{-2} \fangsong\bfseries
 				\uline{\ZJU@title\hfill}
-			\end{minipage}} \\%[20pt]
-			\rule{0pt}{10mm}英文论文题目: &
-			{\begin{minipage}[t][60pt][t]{\titleulwidth@cover}
-				\newlength{\etitlelength}
-				\fontsize{16}{23}\bfseries
-				\settowidth{\etitlelength}{\ZJU@englishtitle}
-% 使封面英文标题下划线数量能够适应因英文标题内容长短变化而引起的英文标题行数变化
-% 而引起的下划线行数变化，下划线行数就是英文标题行数。目前最大的支持行数为3行，
-% 不过行数可以根据需要扩展，只要符合页面格式的美观即可。不过论文编写规则中提到：
-% 英文标题翻译应简短准确，一般不应超过150个字母，必要时可以加副标题。
-				\ZJU@englishtitle\\*
-				\ifdim\etitlelength<\titleulwidth@cover
-					\raisebox{31pt}[0pt][0pt]{\parbox[t][][t]{\titleulwidth@cover}{
-					\rule{\titleulwidth@cover}{\ULthickness}}}
-				\else\ifdim\etitlelength<2\titleulwidth@cover
-						\raisebox{67pt}[0pt][0pt]{\parbox[t][][t]{\titleulwidth@cover}{
-						\rule{\titleulwidth@cover}{\ULthickness}\\*
-						\rule{\titleulwidth@cover}{\ULthickness}}}
-				\else\ifdim\etitlelength<3\titleulwidth@cover
-						\raisebox{103pt}[0pt][0pt]{\parbox[t][][t]{\titleulwidth@cover}{
-						\rule{\titleulwidth@cover}{\ULthickness}\\*
-						\rule{\titleulwidth@cover}{\ULthickness}\\*
-						\rule{\titleulwidth@cover}{\ULthickness}}}
-				\fi\fi\fi
-			\end{minipage}}\\*
+			\end{minipage}} \\ %[20pt]
+			
+
 		\end{tabular}
 		\vfill
 		\begin{tabular}{>{\zihao{4}\songti}r>{\zihao{4}\fangsong}l}
-			申请人姓名: & \ZJUunderline[200pt]{\ZJU@author} \\[3mm]
-			指导教师: & \ZJUunderline[200pt]{\ZJU@supervisor} \\[3mm]
-			\if@cpsupervisor
-				合作导师: & \ZJUunderline[200pt]{\ZJU@cpsupervisor} \\[3mm]
-			\fi
+			学生姓名: & \ZJUunderline[200pt]{\ZJU@author} \\[3mm]
+			学生学号: & \ZJUunderline[200pt]{\ZJU@studentnumber} \\[3mm]
+			%课程教师: & \ZJUunderline[200pt]{\ZJU@supervisor} \\[3mm]
+			%合作导师: & \ZJUunderline[200pt]{\ZJU@cpsupervisor} \\[3mm]
 			专业名称: & \ZJUunderline[200pt]{\ZJU@major} \\[3mm]
-			研究方向: & \ZJUunderline[200pt]{\ZJU@research} \\[3mm]
+			%课程名称: & \ZJUunderline[200pt]{\ZJU@research} \\[3mm]
 			所在学院: & \ZJUunderline[200pt]{\ZJU@institute}
 		\end{tabular}
 	\end{center}
 	\vskip 17mm
 	\begin{center}
-		{\zihao{-3}\songti\bfseries 论文提交日期\ZJUunderline[150pt]{%
+		{\zihao{-3}\songti\bfseries 论文提交日期\ZJUunderline[150pt]{
 		\ZJU@submitdate}}
 	\end{center}
 	%清空变量节省空间
@@ -416,7 +370,6 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % 中文题名页
 \newcommand\ZJUmakeCNtitlepage{
 	\cleardoublepage
-	\pdfbookmark[0]{中文题名页}{anchor_cntitle}
 	\thispagestyle{ZJU@empty}
 	{
 	\linespread{1.3}
@@ -538,7 +491,6 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % 英文题名页
 \newcommand\ZJUmakeENtitlepage{
 	\cleardoublepage
-	\pdfbookmark[0]{英文题名页}{anchor_entitle}
 	\thispagestyle{ZJU@empty}
 	{
 	\linespread{1.3}
@@ -592,31 +544,23 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 							& \ZJUunderline[260pt]{\ZJU@enreviewerB}\\[2mm]
 							& \ZJUunderline[260pt]{\ZJU@enreviewerC}\\[2mm]
 							& \ZJUunderline[260pt]{\ZJU@enreviewerD}\\[2mm]
-							& \ZJUunderline[260pt]{\ZJU@enreviewerE}\\[8mm]
-		\multicolumn{2}{l}{\zihao{4} Examining Committee Chairperson:}\\[2mm]
-							& \ZJUunderline[260pt]{\ZJU@enchairperson}\\[2mm]
-		\multicolumn{2}{l}{\zihao{4} Examining Committee Members:}\\[2mm]
-							&\ZJUunderline[260pt]{\ZJU@encommissionerA}\\[2mm]
-							&\ZJUunderline[260pt]{\ZJU@encommissionerB}\\[2mm]
-							&\ZJUunderline[260pt]{\ZJU@encommissionerC}\\[2mm]
-							&\ZJUunderline[260pt]{\ZJU@encommissionerD}\\[2mm]
-							&\ZJUunderline[260pt]{\ZJU@encommissionerE}
+							& \ZJUunderline[260pt]{\ZJU@enreviewerE}
 		\end{tabular}
 	\end{center}
-%	\vspace{8mm}
+	\vspace{8mm}
 	% 以下水平间距的命令用于跟上面对齐
 	% 第一个水平间距命令采用LaTeX的\hspace命令
 	% 若采用之后的TeX原始间距命令则水平间距无法产生，原因未知
-%	\hspace*{6.3ex}		{\zihao{4} Examining Committee Chairperson:}\\[2mm]
+	\hspace{6.3ex}		{\zihao{4} Examining Committee Chairperson:}\\[2mm]
 	% 以下间距命令采用TeX命令，\hb@xt@ 即为 \hbox to 的宏
 	% 这里若采用\hspace命令，这水平间距无法产生，原因未知
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@enchairperson}\\[2mm]
-%	\hspace*{6.3ex}	{\zihao{4} Examining Committee Members:}\\[2mm]
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@encommissionerA}\\[2mm]
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@encommissionerB}\\[2mm]
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@encommissionerC}\\[2mm]
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@encommissionerD}\\[2mm]
-%	\hspace*{30.2ex} 	\ZJUunderline[260pt]{\ZJU@encommissionerE}\\
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@enchairperson}\\[2mm]
+	\hb@xt@ 6.3ex{}		{\zihao{4} Examining Committee Members:}\\[2mm]
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@encommissionerA}\\[2mm]
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@encommissionerB}\\[2mm]
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@encommissionerC}\\[2mm]
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@encommissionerD}\\[2mm]
+	\hb@xt@ 30.2ex{} 	\ZJUunderline[260pt]{\ZJU@encommissionerE}\\
 	\vfill
 	\hfill{\zihao{4} Date of oral defence：\ZJUunderline[150pt]{%
 	\ZJU@eendefencedate}}}
@@ -652,7 +596,6 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % 独创声明与版权协议转让页
 \newcommand\makeOSpage{%
 	\cleardoublepage
-	\pdfbookmark[0]{独创性声明}{anchor_os}
 	\thispagestyle{ZJU@empty}
 	{
 		\newcommand\signature@date{签字日期：%
@@ -688,9 +631,9 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 		扫描等复制手段保存、汇编学位论文。
 
 		（保密的学位论文在解密后适用本授权书）\\[20pt]
-		\begin{tabular}{p{0.5\textwidth}p{0.5\textwidth}}
-			学位论文作者签名：	&  导师签名：\\[20pt]
-			\signature@date 	&  \signature@date
+		\begin{tabular}{p{0.5\textwidth}p{0.4\textwidth}}
+			\CTEXindent 学位论文作者签名：	&  导师签名：\\[20pt]
+			\CTEXindent \signature@date 	&  \signature@date
 		\end{tabular}
 
 	}
@@ -698,7 +641,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 %---------- 层次标题格式设置 ----------
 \setcounter{secnumdepth}{4}		%设置为四级标题
-\renewcommand\@chapapp{第\thechapter 章}%
+\renewcommand\@chapapp{ \thechapter}%
 
 % 以下对标题格式采用laTeX2e底层命令主要是为了防止ctex宏包升级改变导致的命令不兼
 % 容性，假如2.0之后宏包对1.02宏包命令不再支持，以后又要修改，不如一鼓作气。
@@ -781,25 +724,24 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 %%一级节标题格式设置----四号仿宋加黑
 \renewcommand\section{\@startsection{section}{1}{\z@}%
-									{2ex \@plus .2ex \@minus .2ex}%
-									{1.8ex \@plus.2ex}%
+									{3.5ex \@plus 1ex \@minus .2ex}%
+									{2.3ex \@plus.2ex}%
 									{\parindent \z@ \raggedright
 									 \fangsong\zihao{4}\bfseries}}
 
 %%二级节标题格式设置----小四号仿宋
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-									{1.6ex \@plus 0.4ex \@minus .2ex}%
-									{1ex \@plus.2ex}%
+									{3.25ex \@plus 1ex \@minus .2ex}%
+									{1.5ex \@plus.2ex}%
 									{\parindent \z@ \raggedright
-									 \fangsong\zihao{-4}}}
+									 \fangsong\zihao{-4}\bfseries}}
 
 %%三级节标题格式设置----小四号仿宋
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-									{1.4ex \@plus 0.3ex \@minus .2ex}%
-									{0.9ex \@plus.2ex}%
+									{3.25ex \@plus 1ex \@minus .2ex}%
+									{1.5ex \@plus.2ex}%
 									{\parindent \z@ \raggedright
 									 \fangsong\zihao{-4}}}
-
 
 % \frontmatter,\mainmatter,\backmatter重定义。
 \renewcommand\frontmatter{%
@@ -834,9 +776,9 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 	\fi}
 
 %---------- 目录（目次） ----------
-\renewcommand{\contentsname}{目\texorpdfstring{\ZJUspace}{}次}				% 重命名章节目录名。
-\renewcommand{\listfigurename}{插\texorpdfstring{\ZJUspace}{}图}			% 重命名插图目录名。
-\renewcommand{\listtablename}{表\texorpdfstring{\ZJUspace}{}格}				% 重命名表目录名。
+\renewcommand{\contentsname}{目\ZJUspace 录}				% 重命名章节目录名。
+\renewcommand{\listfigurename}{插\ZJUspace 图}				% 重命名插图目录名。
+\renewcommand{\listtablename}{表\ZJUspace 格}				% 重命名表目录名。
 
 % 下一条命令作用：在toc目录文件中插入‘\let\CTEX@spaceChar\relax’字符，用以删除目
 % 录中的空格字符，其空格字符由\CTEX@spaceChar定义。
@@ -846,7 +788,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 \renewcommand\@pnumwidth{1.55em}		% 放页码page这个盒子的宽度
 \renewcommand\@tocrmarg{2.55em}			% 这个参数怎么没用，改动后看不到效果
 \renewcommand\@dotsep{2.2} 				% 目录点间的距离
-\setcounter{tocdepth}{2}				% 目录深度，到subsection。
+\setcounter{tocdepth}{1}				% 目录深度，到subsection。
 
 % % 根据\contentsline 的原理，我自己写一个\ZJU@l@***的命令。
 % % 嗯，发现这个命令并没有什么卵用。待以后在开发。
@@ -984,20 +926,20 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 %% 以下为设置浮动对象和文字之间的距离。
 % 版心顶部或者版心底部浮动体之间的垂直距离，默认为12pt plus 2pt minus 2pt。
-\setlength{\floatsep}{10bp \@plus2pt \@minus1pt}
+\setlength{\floatsep}{20bp \@plus4pt \@minus1pt}
 
 % 文本行之间浮动体（使用h位置选项）与上下文之间的距离，默认为12pt plus 2pt minus
 % 2pt。
-\setlength{\intextsep}{12bp \@plus2pt \@minus1pt}
+\setlength{\intextsep}{20bp \@plus4pt \@minus2pt}
 
 % 版心顶部或底部的浮动体与文本之间的距离，默认为12pt plus 2pt minus 2pt。
-\setlength{\textfloatsep}{12bp \@plus2pt \@minus1pt}
+\setlength{\textfloatsep}{20bp \@plus4pt \@minus2pt}
 
 % 浮动页中，版心顶部的浮动体与版心顶边之间的距离，默认为0pt plus 1fil。
 \setlength{\@fptop}{0bp \@plus1.0fil}
 
 % 浮动页中浮动体直接的距离，默认为8pt plus 2fil。
-\setlength{\@fpsep}{8bp \@plus2.0fil}
+\setlength{\@fpsep}{12bp \@plus2.0fil}
 
 % 浮动页中，版心底部的浮动体与版心底边之间的距离，默认为0pt plus 1fil。
 \setlength{\@fpbot}{0bp \@plus1.0fil}
@@ -1022,7 +964,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 % ---------- 中英文摘要及关键词 ----------
 % 中文摘要环境
 \newenvironment{cabstract}{%
-	\chapter{摘\texorpdfstring{\ZJUspace}{}要}}{}
+	\chapter{摘\ZJUspace 要}}{}
 \newenvironment{eabstract}{%
 	\chapter{Abstract}}{}
 
@@ -1114,7 +1056,43 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
               \advance\labelwidth-\labelsep}
 
 % ---------- 打算重新定义Enumerate，Itemize，先挖个坑 ----------
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.96,.96,.99}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{comment}{rgb}{0,0.54,0.56}
+\definecolor{string}{rgb}{ 0.1328    ,0.5430 ,   0.1328}
+\definecolor{purple}{rgb}{0.1172,    0.5625,    0.9961}
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with,classdef,properties,end,methods},
+  morecomment=[l]{//},
+  morecomment=[l]{\%},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  keywordstyle=\color{purple}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{comment}\ttfamily,
+  stringstyle=\color{comment}\bfseries,
+  sensitive=true
+}
 
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
 
 % ---------- 缩写、符号清单、术语表 ----------
 % 以下尺寸详细说明见P33/112
