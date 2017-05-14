@@ -261,17 +261,17 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 
 %---------- 本机字体设置 ----------
 \RequirePackage{fontspec}
-\setmainfont{TeX Gyre Termes}	%相当于MS Word中的Times New Roman。
-\setsansfont{TeX Gyre Heros}	%相当于MS Word中的Helvetica。
-\setmonofont{TeX Gyre Cursor}	%相当于MS Word中的Curier。
+\setmainfont{Times New Roman}	%相当于MS Word中的Times New Roman。
+\setsansfont{Helvetica}	%相当于MS Word中的Helvetica。
+\setmonofont{Courier}	%相当于MS Word中的Curier。
 \RequirePackage{xeCJK}
 % 设置中文正文字体为仿宋，加粗为黑体，斜体为楷体
-\setCJKmainfont[BoldFont={SimHei}, ItalicFont={KaiTi}]{FangSong}
+\setCJKmainfont[BoldFont={STHeitiSC-Medium}, ItalicFont={STKaiti}]{STFangsong}
 % 中文无衬线字体，不知道怎么设置，待以后解决。
 % \setCJKsansfont{}
 % 由于汉字都是等宽的，等宽字体通常应用在代码中，故这里选择用幼圆字体，具体有待以
 % 后更改。
-\setCJKmonofont{YouYuan}
+\setCJKmonofont{STYuanti-SC-Regular}
 
 %---------% 封面及中英标题页 ----------
 % 定义封面及标题页设置中常用的下划线命令（默认宽度90pt）
