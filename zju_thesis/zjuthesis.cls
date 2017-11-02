@@ -305,7 +305,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 		\vspace{4mm}
 		{
 			\if@doctor
-				{\songti \zihao{-1}读书报告}
+				{\songti \zihao{-1}开题报告}
 			\else
 				{\songti \zihao{-1}硕士学位论文}
 			\fi
@@ -331,10 +331,10 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 		\begin{tabular}{>{\zihao{4}\songti}r>{\zihao{4}\fangsong}l}
 			学生姓名: & \ZJUunderline[200pt]{\ZJU@author} \\[3mm]
 			学生学号: & \ZJUunderline[200pt]{\ZJU@studentnumber} \\[3mm]
-			%课程教师: & \ZJUunderline[200pt]{\ZJU@supervisor} \\[3mm]
+			专业导师: & \ZJUunderline[200pt]{\ZJU@supervisor} \\[3mm]
 			%合作导师: & \ZJUunderline[200pt]{\ZJU@cpsupervisor} \\[3mm]
 			专业名称: & \ZJUunderline[200pt]{\ZJU@major} \\[3mm]
-			%课程名称: & \ZJUunderline[200pt]{\ZJU@research} \\[3mm]
+			研究方向: & \ZJUunderline[200pt]{\ZJU@research} \\[3mm]
 			所在学院: & \ZJUunderline[200pt]{\ZJU@institute}
 		\end{tabular}
 	\end{center}
