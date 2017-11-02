@@ -305,7 +305,8 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 		\vspace{4mm}
 		{
 			\if@doctor
-				{\songti \zihao{-1}开题报告}
+				{\songti \zihao{-1}博士学位论文开题报告
+}
 			\else
 				{\songti \zihao{-1}硕士学位论文}
 			\fi
@@ -319,7 +320,7 @@ Created: 2014.09.15 by Sky and Hamburger, Last Modified: 2014.09.12 by Hamburger
 	\addtolength{\titleulwidth@cover}{260pt}
 	\begin{center}
 		\begin{tabular}[t]{>{\zihao{3}\bfseries}rl}
-			 &
+			论文题目 & 
 			{\begin{minipage}[t][60pt][t]{\titleulwidth@cover}
 				\zihao{-2} \fangsong\bfseries
 				\uline{\ZJU@title\hfill}

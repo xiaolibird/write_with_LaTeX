@@ -1,0 +1,27 @@
+% !TEX root = ../main.tex
+
+\chapter{研究基础}
+\section{与本项目有关的研究工作积累和已取得的研究工作成绩}
+
+\section{已具备的实验、资料等条件，尚缺少的实验、资料条件和拟解决的途径}
+\chapter{高性能图模型}
+
+\section{kNN图构造}
+
+\section{分布式图模型}
+机器学习广泛应用在机器人、数据挖掘、物理和生物学等于多领域中，然而随着万维网的发展以及数据收集技术的改进，现实世界的数据集已经在维度和复杂性上快速增长，所以机器学习算法在一定程度上需要改善和扩展。但是设计和实现高效的秉性机器学习算法是具有挑战性的。现有的高级并行框架（如MapReduce）性能不足，同时MPI等低级工具很难使用。有两种基于图的分布式开发方案，一种是2010年CMU的Select实验室提出了GraphLab框架，一种是基于Spark的用于图和图并行计算的Graph计算框架。
+\subsection{GraphLab并行构架}
+GraphLab将数据抽象成Graph结构，将算法的执行过程抽象成Gather、Apply、Scatter三个步骤。其并行的核心思想是对顶点的切分。如以下示例。示例中，需要完成对$V_0$邻接顶点的求和计算，串行实现中，V0对其所有的邻接点进行遍历，累加求和。而GraphLab中，将顶点$V_0$进行切分，将$V_0$的 边关系以及对应的邻接点部署在两台处理器上，各台机器上并行进行部分求和运算，然后通过master顶点和mirror顶点的通信完成最终的计算。
+\begin{enumerate}
+\item Gather阶段。
+   工作顶点的边 (可能是所有边，也有可能是入边或者出边)从领接顶点和自身收集数据，记为$gather\_data\_i$，各个边的数据graphlab会求和，记为$sum\_data$。这一阶段对工作顶点、边都是只读的。
+\item Apply阶段。
+Mirror将gather计算的结果sum_data发送给master顶点，master进行汇总为total。Master利用total和上一步的顶点数据，按照业务需求进行进一步的计算，然后更新master的顶点数据，并同步mirror。Apply阶段中，工作顶点可修改，边不可修改。
+\item  Scatter阶段。
+工作顶点更新完成之后，更新边上的数据，并通知对其有依赖的邻结顶点更新状态。这scatter过程中，工作顶点只读，边上数据可写。
+在执行模型中，graphlab通过控制三个阶段的读写权限来达到互斥的目的。在gather阶段只读，apply对顶点只写，scatter对边只写。并行计算的同步通过master和mirror来实现，mirror相当于每个顶点对外的一个接口人，将复杂的数据通信抽象成顶点的行为。
+
+\end{enumerate}
+
+
+\section{基于GPU的图模型}
